@@ -14,6 +14,7 @@ from app.api.routes import (
     notifications,
     tenants,
     tickets,
+    users,
     webhooks,
 )
 from app.core.config import get_settings
@@ -61,6 +62,7 @@ def create_app() -> FastAPI:
         tenants.router,
         contacts.router,
         tickets.router,
+        users.router,
         dashboard.router,
         webhooks.router,
         bot.router,
