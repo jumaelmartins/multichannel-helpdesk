@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: multichannel-helpdesk-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: MONGODB_URI
+        sync: false # paste your MongoDB Atlas connection string
+      - key: MONGODB_DATABASE
+        value: helpdesk_demo
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEBHOOK_TOKEN
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false # set to your Vercel URL, e.g. https://multichannel-helpdesk.vercel.app
+      - key: DEMO_MODE
+        value: "true"
+      - key: APP_ENV
+        value: production
