@@ -1,0 +1,44 @@
+services:
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: Multichannel Helpdesk
+      APP_ENV: development
+      MONGODB_URI: mongodb://mongodb:27017
+      MONGODB_DATABASE: helpdesk_demo
+      JWT_SECRET: local-dev-secret-change-me-in-prod!!
+      CORS_ORIGINS: http://localhost:3000
+      DEMO_MODE: "true"
+      WEBHOOK_TOKEN: demo-webhook-token
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - api
+
+volumes:
+  mongo_data:
